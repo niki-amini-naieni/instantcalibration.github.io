@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html><head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>Instant Uncertainty Calibration of NeRFs Using a Meta-calibrator</title>
+
+
+
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:image" content="">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="Instant Uncertainty Calibration of NeRFs Using a Meta-calibrator">
+    <meta property="og:description" content="Neural Radiance Fields (NeRFs) have markedly improved novel view synthesis, but accurate uncertainty quantification in their image predictions remains an open problem. The prevailing methods for estimating uncertainty, including the state-of-the-art Density-aware NeRF Ensembles (DANE), quantify uncertainty without calibration. This frequently leads to over- or under-confidence in image predictions, which can undermine their real-world applications. In this paper, we propose a method which, for the first time, achieves calibrated uncertainties for NeRFs. To accomplish this, we overcome a significant challenge in adapting existing calibration techniques to NeRFs: a need to hold out ground truth images from the target scene, reducing the number of images left to train the NeRF. This issue is particularly problematic in sparse-view settings, where we can operate with as few as three images. To address this, we introduce the concept of a meta-calibrator that performs uncertainty calibration for NeRFs with a single forward pass without the need for holding out any images from the target scene. Our meta-calibrator is a neural network that takes as input the NeRF images and uncalibrated uncertainty maps and outputs a scene-specific calibration curve that corrects the NeRF’s uncalibrated uncertainties. We show that the meta-calibrator can generalize on unseen scenes and  achieves well-calibrated and state-of-the-art uncertainty for NeRFs, significantly beating DANE and other approaches. This opens opportunities to improve applications that rely on accurate NeRF uncertainty estimates such as next-best view planning and potentially more trustworthy image reconstruction for medical diagnosis.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Instant Uncertainty Calibration of NeRFs Using a Meta-calibrator">
+    <meta name="twitter:description" content="Neural Radiance Fields (NeRFs) have markedly improved novel view synthesis, but accurate uncertainty quantification in their image predictions remains an open problem. The prevailing methods for estimating uncertainty, including the state-of-the-art Density-aware NeRF Ensembles (DANE), quantify uncertainty without calibration. This frequently leads to over- or under-confidence in image predictions, which can undermine their real-world applications. In this paper, we propose a method which, for the first time, achieves calibrated uncertainties for NeRFs. To accomplish this, we overcome a significant challenge in adapting existing calibration techniques to NeRFs: a need to hold out ground truth images from the target scene, reducing the number of images left to train the NeRF. This issue is particularly problematic in sparse-view settings, where we can operate with as few as three images. To address this, we introduce the concept of a meta-calibrator that performs uncertainty calibration for NeRFs with a single forward pass without the need for holding out any images from the target scene. Our meta-calibrator is a neural network that takes as input the NeRF images and uncalibrated uncertainty maps and outputs a scene-specific calibration curve that corrects the NeRF’s uncalibrated uncertainties. We show that the meta-calibrator can generalize on unseen scenes and  achieves well-calibrated and state-of-the-art uncertainty for NeRFs, significantly beating DANE and other approaches. This opens opportunities to improve applications that rely on accurate NeRF uncertainty estimates such as next-best view planning and potentially more trustworthy image reconstruction for medical diagnosis.">
+    <meta name="twitter:image" content="">
+
+
+    <!-- mirror: F0%9F%AA%9E&lt -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💥</text></svg>">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/codemirror.min.css">
+    <link rel="stylesheet" href="css/app.css">
+
+
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/codemirror.min.js"></script>
+    <script src="js/clipboard.min.js"></script>
+    <script src="js/video_comparison.js"></script>
+    <script src="js/app.js"></script>
+</head>
+
+<body>
+    <div class="container" id="header" style="text-align: center; margin: auto;">
+        <div class="row" id="title-row" style="max-width: 100%; margin: 0 auto; display: inline-block">
+            <h2 class="col-md-12 text-center" id="title">
+                <b>💥Instant Uncertainty Calibration of NeRFs Using a Meta-calibrator</b><br>
+
+            </h2>
+        </div>
+	<div class="row" id="title-row" style="max-width: 100%; margin: 0 auto; display: inline-block">
+            <h3 class="col-md-12 text-center" id="title">
+                 European Conference on Computer Vision (ECCV) 2024<br>─── ⋆⋅☆⋅⋆ ──
+
+            </h3>
+        </div>
+        <div class="row" id="author-row" style="margin:auto;">
+            <div class="col-md-12 text-center" style="display: table; margin:auto">
+                <table class="author-table" id="author-table">
+                    <tr>
+			<td>
+				<table style="width:100%">
+                        		<td>
+                            			<a style="text-decoration:none" href="https://www.linkedin.com/in/niki-amini-naieni/">
+                             			 Niki Amini-Naieni
+                           			</a>
+                            			<br>University of Oxford<br><a style="text-decoration:none" href="https://www.robots.ox.ac.uk/~vgg/">
+                                            VGG
+                                          </a>
+                        		</td>
+                        		<td>
+                            			<a style="text-decoration:none" href="https://www.robots.ox.ac.uk/~tomj/">
+                              			Tomas Jakab
+                            			</a>
+                            			<br>University of Oxford<br><a style="text-decoration:none" href="https://www.robots.ox.ac.uk/~vgg/">
+                                            VGG
+                                          </a>
+                        		</td>
+                        		<td>
+                            			<a style="text-decoration:none" href="https://www.robots.ox.ac.uk/~vedaldi/">
+                             			Andrea Vedaldi
+                            			</a>
+                            			<br>University of Oxford<br><a style="text-decoration:none" href="https://www.robots.ox.ac.uk/~vgg/">
+                                            VGG
+                                          </a>
+                        		</td>
+				</table>
+			</td>	
+                    </tr>
+                    <tr>
+                        <td>
+				<table style="width:100%">
+					<td>
+                           		 	<a style="text-decoration:none" href="https://www.cs.toronto.edu/~jacobson/">
+                                		Ronald Clark
+                            			</a>
+                            			<br>University of Oxford<br><a style="text-decoration:none" href="https://pixl.cs.ox.ac.uk/">
+                                            PIXL
+                                          </a>
+                        			</td>
+				</table>
+			</td>	
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('author-row').style.maxWidth = document.getElementById("title-row").clientWidth + 'px';
+    </script>
+    <div class="container text-center" id="main">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-3">
+            <ul >
+                <li class="mb-3 ">
+                    <a href="./pdfs/paper.pdf">
+                        <img src="./img/paper_image.png" height="60px">
+                        <h4><strong>Paper</strong></h4>
+                    </a>
+                </li>
+                <li class="mb-3 ">
+                    <a href="https://arxiv.org/abs/2312.02350">
+                        <img src="./img/arxiv.jpeg" height="60px">
+                        <h4><strong>arXiv</strong></h4>
+                    </a>
+                </li>
+                <li class="mb-3">
+                    <a href="https://github.com/niki-amini-naieni/NeRF-MetaCal">
+                        <img src="img/github.png" height="60px">
+                        <h4><strong>Code</strong></h4>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+	<div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                
+                <div class="text-center">
+                    <img src="./img/teaser.png" width="70%">
+                    <img src="./img/caption.png" width="70%">
+                </div>
+            </div>
+        </div>
+
+        
+
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Abstract
+                </h3>
+                <p class="text-justify">
+                    Neural Radiance Fields (NeRFs) have markedly improved novel view synthesis, but accurate uncertainty quantification in their image predictions remains an open problem. The prevailing methods for estimating uncertainty, including the state-of-the-art Density-aware NeRF Ensembles (DANE), quantify uncertainty without calibration. This frequently leads to over- or under-confidence in image predictions, which can undermine their real-world applications. In this paper, we propose a method which, for the first time, achieves calibrated uncertainties for NeRFs. To accomplish this, we overcome a significant challenge in adapting existing calibration techniques to NeRFs: a need to hold out ground truth images from the target scene, reducing the number of images left to train the NeRF. This issue is particularly problematic in sparse-view settings, where we can operate with as few as three images. To address this, we introduce the concept of a meta-calibrator that performs uncertainty calibration for NeRFs with a single forward pass without the need for holding out any images from the target scene. Our meta-calibrator is a neural network that takes as input the NeRF images and uncalibrated uncertainty maps and outputs a scene-specific calibration curve that corrects the NeRF’s uncalibrated uncertainties. We show that the meta-calibrator can generalize on unseen scenes and  achieves well-calibrated and state-of-the-art uncertainty for NeRFs, significantly beating DANE and other approaches. This opens opportunities to improve applications that rely on accurate NeRF uncertainty estimates such as next-best view planning and potentially more trustworthy image reconstruction for medical diagnosis.               </p>
+            </div>
+        </div>
+	
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Citation
+                </h3>
+                <div class="form-group col-md-10 col-md-offset-1">
+                    <textarea id="bibtex" class="form-control" readonly>
+@inproceedings{AminiNaieni24,
+    title={Instant Uncertainty Calibration of {NeRFs} Using a Meta-Calibrator},
+    author={Niki Amini-Naieni and Tomas Jakab and Andrea Vedaldi and Ronald Clark},
+    booktitle={ECCV},
+    year={2024}
+    }
+                    </textarea>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>
+                    Acknowledgements
+                </h3>
+                <p class="text-justify">
+                    <br>
+                The website template was borrowed from <a href="https://lilygoli.github.io/">Lily Goli</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<script>
+    function changeVideo(videoName) {
+      const leftVideo = document.getElementById('left-video');
+      const rightVideo = document.getElementById('right-video');
+
+      if (videoName === 'rgb_base') {
+        leftVideo.src = 'video/rgb_base.mp4';
+
+      } else if (videoName === 'rgb_nb') {
+        leftVideo.src = 'video/rgb_nb.mp4';
+
+      } else if (videoName === 'uncertainty') {
+        rightVideo.src = 'video/uncertainty.mp4';
+
+      } else if (videoName === 'rgb_clean') {
+        rightVideo.src = 'video/rgb_clean.mp4';
+
+      }
+      leftVideo.load();
+      rightVideo.load();
+      leftVideo.play();
+      rightVideo.play();
+    }
+
+    function changeVideo2(videoName) {
+      const leftVideo = document.getElementById('left-video-2');
+      const rightVideo = document.getElementById('right-video-2');
+
+      if (videoName === 'rgb_base') {
+        leftVideo.src = 'video/rgb_base_2.mp4';
+
+      } else if (videoName === 'rgb_nb') {
+        leftVideo.src = 'video/rgb_nb_2.mp4';
+
+      } else if (videoName === 'uncertainty') {
+        rightVideo.src = 'video/uncertainty_2.mp4';
+
+      } else if (videoName === 'rgb_clean') {
+        rightVideo.src = 'video/rgb_clean_2.mp4';
+
+      }
+      leftVideo.load();
+      rightVideo.load();
+      leftVideo.play();
+      rightVideo.play();
+    }
+
+    function changeVideo3(videoName) {
+      const leftVideo = document.getElementById('left-video-3');
+      const rightVideo = document.getElementById('right-video-3');
+
+      if (videoName === 'rgb_base') {
+        leftVideo.src = 'video/rgb_base_3.mp4';
+
+      } else if (videoName === 'rgb_nb') {
+        leftVideo.src = 'video/rgb_nb_3.mp4';
+
+      } else if (videoName === 'uncertainty') {
+        rightVideo.src = 'video/uncertainty_3.mp4';
+
+      } else if (videoName === 'rgb_clean') {
+        rightVideo.src = 'video/rgb_clean_3.mp4';
+
+      }
+      leftVideo.load();
+      rightVideo.load();
+      leftVideo.play();
+      rightVideo.play();
+    }
+    function changeImage(videoName) {
+      const leftVideo = document.getElementById('centr-image');
+      const rightVideo = document.getElementById('right-image');
+
+      if (videoName === 'error') {
+        leftVideo.src = 'img/error.png';
+
+      } else if (videoName === 'ensemble') {
+        leftVideo.src = 'img/ensemble.png';
+
+      } else if (videoName === 'ours') {
+        rightVideo.src = 'img/ours.png';
+
+      } else if (videoName === 'cf') {
+        rightVideo.src = 'img/cf.png';
+
+      } else if (videoName === 'ensemble2') {
+        rightVideo.src = 'img/ensemble.png';
+
+      }
+
+    }
+  </script>
+        
+
+	
+</body></html>
